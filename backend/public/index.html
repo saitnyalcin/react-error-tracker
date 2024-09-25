@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error Tracking Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Error Tracking Dashboard</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Error Message</th>
+        <th>Component Stack</th>
+        <th>User Agent</th>
+        <th>Platform</th>
+        <th>Language</th>
+      </tr>
+    </thead>
+    <tbody id="errorTableBody">
+      <!-- Errors will be populated here by JavaScript -->
+    </tbody>
+  </table>
+
+  <script>
+    // Fetch errors from the backend and populate the table
+    async function fetchErrors() {
+      const response = await fetch('http://localhost:3000/api/errors');
+      const errors = await response.json();
+      const errorTableBody = document.getElementById('errorTableBody');
+      
+      errors.forEach(error => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td>${error.error}</td>
+          <td>${error.errorInfo.replace(/\n/g, '<br>')}</td>
+          <td>${error.deviceInfo.userAgent}</td>
+          <td>${error.deviceInfo.platform}</td>
+          <td>${error.deviceInfo.language}</td>
+        `;
+
+        errorTableBody.appendChild(row);
+      });
+    }
+
+    // Call fetchErrors to load data when the page loads
+    window.onload = fetchErrors;
+  </script>
+</body>
+</html>
